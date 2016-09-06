@@ -16,7 +16,18 @@
     "install-globally": "npm install -g .",
     "prepublish": "npm run clean && flow check && npm run test && npm run build"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mperdikeas/js-ai-for-shogi-like-games.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mperdikeas/js-ai-for-shogi-like-games/issues"
+  },
+  "homepage": "https://github.com/mperdikeas/js-ai-for-shogi-like-games#readme",
+  "keywords": [
+      "shogi", "AI", "boardgames"
+  ],
+  "author": "Marcus Junius Brutus",
   "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.6.5",
