@@ -1,0 +1,8 @@
+[include]
+    ../../node_modules/assert/
+[options]
+    esproposal.class_static_fields=enable
+    suppress_comment= \\(.\\|\n\\)*\\$SuppressFlowFinding:
+[libs]
+    decls/
+    

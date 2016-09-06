@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/constants.js"],"names":["exports","MAX_BOARD_DIMENSION"],"mappings":"AACA;;AAGAA,QAAQC,mBAAR,GAA8B,CAA9B","file":"constants.js","sourcesContent":["// @flow\n'use strict';\n\n\nexports.MAX_BOARD_DIMENSION = 9;\n\n"]}
