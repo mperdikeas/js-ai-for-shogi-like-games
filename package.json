@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/index.js",
     "scripts": {
-    "clean": "rm -fr ./lib/*.js && rm -fr ./lib/*.js.flow && rm -fr ./lib/*.js.map",
+    "clean": "rm -fr lib/",
     "prebuild": "mkdir -p lib && for f in $(find src/ -iname *.js | cut -c5-) ; do cp src/$f lib/$f.flow; done",
     "build": "babel src --out-dir lib --source-maps",
     "build-watch": "babel src --out-dir lib --source-maps --watch",
@@ -12,8 +12,8 @@
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "test": "npm run build && mocha --require source-map-support/register --compilers js:babel-register",
     "test-watch": "npm run build && mocha --require source-map-support/register --compilers js:babel-register --watch",
-    "preinstall-globally": "npm run clean && flow check && npm run test && npm run build",
-    "install-globally": "npm install -g .",
+    "preglobalInstallOnThisMachine": "npm run clean && flow check && npm run test && npm run build",
+    "globalInstallOnThisMachine": "npm install -g .",
     "prepublish": "npm run clean && flow check && npm run test && npm run build"
   },
   "repository": {
