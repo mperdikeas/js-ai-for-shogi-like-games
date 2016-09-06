@@ -5,7 +5,7 @@
   "main": "lib/index.js",
     "scripts": {
     "clean": "rm -fr ./lib/*.js && rm -fr ./lib/*.js.flow && rm -fr ./lib/*.js.map",
-    "prebuild": "for f in $(find src/ -iname *.js | cut -c5-) ; do cp src/$f lib/$f.flow; done",
+    "prebuild": "mkdir -p lib && for f in $(find src/ -iname *.js | cut -c5-) ; do cp src/$f lib/$f.flow; done",
     "build": "babel src --out-dir lib --source-maps",
     "build-watch": "babel src --out-dir lib --source-maps --watch",
     "start": "npm run build && node lib/index.js",
