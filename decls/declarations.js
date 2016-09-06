@@ -1,5 +1,4 @@
 import {Point} from '../es6/point.js';
-import {Hen} from '../es6/piece-set.js';
 declare class Number {
     between(a: number, b: number): boolean;
     static POSITIVE_INFINITY: number;
