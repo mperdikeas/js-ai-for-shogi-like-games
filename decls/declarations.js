@@ -1,4 +1,4 @@
-import {Point} from '../es6/point.js';
+import {Point} from 'geometry-2d';
 declare class Number {
     between(a: number, b: number): boolean;
     static POSITIVE_INFINITY: number;
