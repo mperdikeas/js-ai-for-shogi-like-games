@@ -5,7 +5,7 @@ declare class Number {
     static NEGATIVE_INFINITY: number;
 }
 
-declare interface IConcretePiece {
+interface IConcretePiece {
     code: string;
     isKing: boolean;
     toString(): string;
@@ -17,7 +17,7 @@ declare interface IConcretePiece {
 }
 
 
-declare interface IConcretePieceOnSide {
+interface IConcretePieceOnSide {
     piece: IConcretePiece;
     isSideA: boolean;
     switchSides(): IConcretePieceOnSide;
