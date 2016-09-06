@@ -526,6 +526,4 @@ class GameBoard {
 }
 
     
-exports.Point            = Point;
-exports.PieceSet         = PieceSet;
 exports.GameBoard        = GameBoard;
