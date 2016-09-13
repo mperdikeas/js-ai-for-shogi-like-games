@@ -20,6 +20,9 @@ class CaptureBag {
             this.capturedPieces = arguments[0];
         }
     }
+    piecesOfThisSide(forSideA: boolean): Array<IConcretePiece> {
+        return this.capturedPieces.filter(x => forSideA===x.isSideA).map ( x=> x.piece );
+    }
     capture(p: IConcretePieceOnSide): void {
         this.capturedPieces.push(p.switchSidesAndDemote());
     }
