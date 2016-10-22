@@ -157,8 +157,8 @@ class GameBoard {
             const pTo: Point = p.add(move, false);
             const v: Vector = new Vector(p, pTo);
             const newBoard: ?GameBoard = this.move(p, pTo);
-            if (newBoard != null) { // made the test laxer than I normally would, to satisfy Flow
-                assert(newBoard !==null); // but now I am asserting that the stronger condition also holds
+            assert(newBoard !==undefined);
+            if (newBoard != null) {
                 rv.set(v.toString(), newBoard);
             }
         }
@@ -239,8 +239,8 @@ class GameBoard {
             dropOptions.forEach( (pc: IConcretePiece)=> {
                 emptyPoints.forEach( (pn: Point)=>{
                     const newBoard: ?GameBoard = this.drop(new PieceOnSide(pc, sideA), pn);
-                    if (newBoard != null) { // Flow demands this be laxer than I would like
-                        assert(newBoard!==null, 'bad choreography'); // doing the stricter test
+                    assert(newBoard!==undefined);
+                    if (newBoard != null) {
                         const keyOfDropMove = `${new PieceOnSide(pc, sideA)}=>${pn}`;
                         assert(!rv.has(keyOfDropMove), `Weird, drop move ${keyOfDropMove} has alredy been encountered`);
                         rv.set(keyOfDropMove, newBoard);
@@ -324,8 +324,8 @@ class GameBoard {
             throw new Error(`board ${this} does not contain piece at starting point: ${pn1}`);
         else {
             const piece: ?IConcretePieceOnSide = this._get(pn1);
-            if (piece!=null) {           // Flow forces me to be laxer than I would like
-                assert(piece!==null);    // I take care of this forced laxness here ...
+            assert(piece!==undefined);
+            if (piece!=null) {    
                 const sideA: boolean = piece.isSideA;
                 if (sideA)
                     return _.some([pn1, pn2], (v) => {
@@ -367,8 +367,8 @@ class GameBoard {
             throw new Error(`board ${this} does not contain piece at starting point: ${pn}`);
         else {
             const piece: ?IConcretePieceOnSide = this._get(pn);
-            if (piece!=null) {           // Flow forces me to be laxer than I would like
-                assert(piece!==null);    // I take care of this forced laxness here ...
+            assert(piece!==undefined);
+            if (piece!=null) {            
                 const nextBoards: Array<GameBoard> = GameBoard.boardsOnly(this.nextStates(!piece.isSideA, true));
                 
                 // if the piece remains in the same spot for *every* possible next state, then it is not

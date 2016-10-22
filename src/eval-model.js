@@ -44,8 +44,7 @@ class EvaluationModel {
     bonusFromDistanceToPromotionZone(gb: GameBoard, pn: Point): number {
         const _piece: ?IConcretePieceOnSide = gb._get(pn);
         assert(_piece);
-        if (_piece != null) {
-            assert(_piece !== null);
+        if (_piece != null) { // Flow forces me to do that
             const piece: IConcretePiece = _piece.piece;
             if (!piece.isPromotable()) {
                 return 0;
@@ -53,8 +52,8 @@ class EvaluationModel {
                 const promotedPiece: IConcretePiece = piece.promote();
                 assert(this.pieceValues.has(promotedPiece));
                 const valueOfPromotedPiece: ?number = this.pieceValues.get(promotedPiece);
+                assert(valueOfPromotedPiece!==undefined);
                 if (valueOfPromotedPiece!=null) {
-                    assert(valueOfPromotedPiece!==null);
                     const d = gb.distanceFromPromotionZone(pn);
                     if (d>=this.multipliersForDistFromPromotionZone.length) {
                         return 0;
@@ -77,8 +76,8 @@ class EvaluationModel {
 
     evaluateBoard(gb: GameBoard): number { // evaluation is done from the perspective of side A so higher value is better for sideA, lower value is better for sideB
         const b: ?boolean = gb.boardImmediateWinSide();
+        assert(b!==undefined);
         if (b!=null) { // escape for immediate win situations
-            assert(b!==null);
             return b?Number.POSITIVE_INFINITY:Number.NEGATIVE_INFINITY;
         } else {   // normal evaluation
             const pieceValuesFriendlySide           = this._evalPieceValues(gb,  true);
@@ -108,8 +107,8 @@ class EvaluationModel {
         piecesOffBoard.forEach( (p: IConcretePiece) => {
             assert(this.pieceValues.has(p));
             const pieceValue: ?number = this.pieceValues.get(p);
+            assert(pieceValue!==undefined);
             if (pieceValue!=null) {
-                assert(pieceValue!==null);
                 rv += pieceValue*this.offBoardMultiplier;
             } else throw new Error('bug');
         });

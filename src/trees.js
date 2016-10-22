@@ -121,8 +121,8 @@ class Node<V, E> {
     edgeThatLeadsTo(n: Node): ?E {
         assert(!this.isLeaf());
         const children: ?Map<E, Node> = this.children;
+        assert(children !== undefined);
         if (children != null) {
-            assert(children !== null);
             const rv: Array<E> = [];
             children.forEach( function (child: Node, edge: E) {
                 const descendants: Array<Node> = child.descendants(true);
@@ -155,8 +155,8 @@ class Node<V, E> {
                     line+=`, adornment: ${n.adornment}`;
                 lines.push(line);
             } else {
+                assert(birthEdge !== undefined);
                 if (birthEdge!=null) {
-                    assert(birthEdge!==null);
                     // $SuppressFlowFinding: access of computed property/element. Indexable signature not found in ...                    
                     let line: string = `node #${parentN[s]} ~~[${birthEdge}]~~> node #${n[s]} with value: ${valuePrinter(n.value)}`;
                     if (printAdornment)
