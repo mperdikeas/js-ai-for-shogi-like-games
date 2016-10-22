@@ -256,9 +256,9 @@ class GameBoard {
             const newBoard: ?GameBoard = this.drop(pcOnSide, pn);
             assert(newBoard!==undefined);
             if (newBoard != null) {
-                const keyOfDropMove = `${pcOnSide}=>${pn}`;
-                assert(!rv.has(keyOfDropMove), `Weird, drop move ${keyOfDropMove} has alredy been encountered`);
-                rv.set(keyOfDropMove, newBoard);
+                const dropMove = new DropMove(pcOnSide, pn);
+                assert(!rv.has(dropMove.toString()), `Weird, drop move ${dropMove.toString()} has alredy been encountered`);
+                rv.set(dropMove.toString(), newBoard);
             } else
                 throw new Error('bad choreography');
         });
