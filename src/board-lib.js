@@ -237,18 +237,31 @@ class GameBoard {
             const dropOptions: Array<IConcretePiece> = this.captured.dropOptions(sideA);
             const emptyPoints: Array<Point> = this.emptyPoints();
             dropOptions.forEach( (pc: IConcretePiece)=> {
-                emptyPoints.forEach( (pn: Point)=>{
-                    const newBoard: ?GameBoard = this.drop(new PieceOnSide(pc, sideA), pn);
-                    assert(newBoard!==undefined);
-                    if (newBoard != null) {
-                        const keyOfDropMove = `${new PieceOnSide(pc, sideA)}=>${pn}`;
-                        assert(!rv.has(keyOfDropMove), `Weird, drop move ${keyOfDropMove} has alredy been encountered`);
-                        rv.set(keyOfDropMove, newBoard);
-                    } else
-                        throw new Error('bad choreography');
-                })
+                const dropsForThisPiece : Map<string, GameBoard> = this.nextStatesByDroppingAParticularCapturedPiece(pc, sideA)
+                dropsForThisPiece.forEach( (board, keyOfDropMove)=> {
+                    assert(!rv.has(keyOfDropMove), `Weird, drop move ${keyOfDropMove} has alredy been encountered`);
+                    rv.set(keyOfDropMove, board);
+                });
             });
         }
+        return rv;
+    }
+
+    nextStatesByDroppingAParticularCapturedPiece(pc: IConcretePiece, sideA: boolean): Map<string, GameBoard> {
+        const rv: Map<string, GameBoard> = new Map();        
+        const pcOnSide = new PieceOnSide(pc, sideA);
+        assert(this.captured.has(pcOnSide));
+        const emptyPoints: Array<Point> = this.emptyPoints();
+        emptyPoints.forEach( (pn: Point)=>{
+            const newBoard: ?GameBoard = this.drop(pcOnSide, pn);
+            assert(newBoard!==undefined);
+            if (newBoard != null) {
+                const keyOfDropMove = `${pcOnSide}=>${pn}`;
+                assert(!rv.has(keyOfDropMove), `Weird, drop move ${keyOfDropMove} has alredy been encountered`);
+                rv.set(keyOfDropMove, newBoard);
+            } else
+                throw new Error('bad choreography');
+        });
         return rv;
     }
 
