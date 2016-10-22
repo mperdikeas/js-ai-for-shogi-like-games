@@ -23,6 +23,10 @@ class Side {
             return Side.A;
         throw new Error();
     }
+
+    isSideA(): boolean {
+        return (this===Side.A);
+    }
 }
 
 
