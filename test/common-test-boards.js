@@ -230,6 +230,26 @@ Cg
     return gb;
 }
 
+function board3x3_withPromotionZone() {
+    const pieceSet = createPieceSet([Chick, Hen, Elephant, Giraffe, Lion]);
+    const notation = 'l@2~2 * l@2~0';
+    const cb = new CaptureBag();
+    cb.capture(new PieceOnSide(Chick   , false));
+    cb.capture(new PieceOnSide(Chick   , true ));
+    cb.capture(new PieceOnSide(Elephant, false));
+    cb.capture(new PieceOnSide(Elephant, true ));            
+    const gb = GameBoard.create(3, 3, false, 1, pieceSet, notation, cb);
+    assert.equal(gb.toStringFancy().trim(),              
+`
+..l
+...
+..L
+--
+CEce
+`.trim());
+    return gb;
+}
+
 
 exports.boardA                                             = boardA;
 exports.boardB                                             = boardB;
@@ -244,3 +264,4 @@ exports.board1x3_suicideForFirstMover                      = board1x3_suicideFor
 exports.board1x4_victoryForFirstMover                      = board1x4_victoryForFirstMover;
 exports.board2x3_manoeuveringForStandoff                   = board2x3_manoeuveringForStandoff;
 exports.board3x3_victoryWithDrops                          = board3x3_victoryWithDrops;
+exports.board3x3_withPromotionZone                         = board3x3_withPromotionZone;

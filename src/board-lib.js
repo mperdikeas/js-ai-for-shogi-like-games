@@ -294,6 +294,9 @@ class GameBoard {
         if (this._has(pn)) {
             return null;
         }
+        if (this.isPromotionZoneForSide(pn, pc.isSideA)) {
+            return null;
+        }
         const rv : GameBoard = this.clone();
         rv.set(pn, pc);
         rv.captured.hasBeenDroppedBackInTheBoard(pc);
@@ -330,7 +333,7 @@ class GameBoard {
             throw new Error(`Point ${pn.toString()} does not lie in a ${this.width}X${this.height} grid`);
     }
 
-    isPromotionTriggered(pn1: Point, pn2: Point) {
+    isPromotionTriggered(pn1: Point, pn2: Point): boolean {
         assert (!pn1.equals(pn2));
         if (!this._has(pn1))
             throw new Error(`board ${this} does not contain piece at starting point: ${pn1}`);
@@ -350,6 +353,13 @@ class GameBoard {
             } else
                 throw new Error('bug - should have escaped this path by now');
         }
+    }
+
+    isPromotionZoneForSide(pn: Point, sideA: boolean): boolean {
+        if (sideA)
+            return pn.y< this.breadthOfPromotionZone;
+        else
+            return pn.y>=this.height-this.breadthOfPromotionZone;
     }
 
     kingIsOnLastLineUnchecked(sideA: boolean): boolean {

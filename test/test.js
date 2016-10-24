@@ -12,7 +12,7 @@ import {PieceOnSide}                         from '../src/piece.js';
 import {CaptureBag}                          from '../src/captureBag.js';
 import {model000}                            from '../src/eval-model-library.js';
 
-import {boardA, boardB, boardTwoKings, boardWithSideAKingCaptured, boardWithSideBKingCaptured} from './common-test-boards.js';
+import {boardA, boardB, boardTwoKings, boardWithSideAKingCaptured, boardWithSideBKingCaptured, board3x3_withPromotionZone} from './common-test-boards.js';
 
 
 
@@ -298,6 +298,22 @@ LC
 `;
                assert.equal(gb3.toStringFancy(), STATE_3);
            });
+        it('no drops allowed in promotion zone', function() {
+            const board = board3x3_withPromotionZone();
+            const forbiddenDrops = [ [new PieceOnSide(Chick   ,  true), new Point(0,0)],
+                                     [new PieceOnSide(Chick   ,  true), new Point(1,0)],
+                                     [new PieceOnSide(Elephant,  true), new Point(0,0)],
+                                     [new PieceOnSide(Elephant,  true), new Point(1,0)],
+                                     [new PieceOnSide(Chick   , false), new Point(0,2)],
+                                     [new PieceOnSide(Chick   , false), new Point(1,2)],
+                                     [new PieceOnSide(Elephant, false), new Point(0,2)],
+                                     [new PieceOnSide(Elephant, false), new Point(1,2)]                                                                          
+                                   ];
+            forbiddenDrops.forEach( ([piece, point])=>{
+                let nextBoard = board.drop( piece, point );
+                assert.equal(nextBoard, null);
+            });
+        });
     });
     describe('reflection', function () {
         it('should work'
