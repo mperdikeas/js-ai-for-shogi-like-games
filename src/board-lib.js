@@ -217,10 +217,9 @@ class GameBoard {
         });
         return rv;
     }
-    nextStates(sideA: boolean, _ignoreDrops: ?boolean): Map<string, GameBoard> {
+    nextStates(sideA: boolean, ignoreDrops: ?boolean = false): Map<string, GameBoard> {
         // rationale for the [ignoreDrops]: for estimating whether a piece is under attack we need not consider drops
         // so having this switch saves some time.
-        let ignoreDrops: boolean = _ignoreDrops==null?false:_ignoreDrops;
         const rv: Map<string, GameBoard> = new Map();
         // add all possible moves
         this.board.forEach( (v: IConcretePieceOnSide, k: string) => {

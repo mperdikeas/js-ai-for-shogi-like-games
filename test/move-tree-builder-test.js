@@ -7,7 +7,7 @@ import _ from 'lodash';
 import {GameBoard}             from '../src/board-lib.js';
 import {model000}              from '../src/eval-model-library.js';
 import {moveTreeBuilder, sideThatMovesNext, evaluateLeaves, pullEvaluationsUp, bestMove, dynamicEvaluationOfBoard} from '../src/move-tree-builder.js';
-import {boardA, boardB, boardTwoKings, boardTwoKings1x2, boardWithSideAKingCaptured, boardWithSideBKingCaptured, board1x2_withTwoKingsFacing, board3x2_withTwoKingsFacingAndOpportunisticTargets, board3x3_withTraps, board1x3_suicideForFirstMover, board1x4_victoryForFirstMover, board2x3_manoeuveringForStandoff} from './common-test-boards.js';
+import {boardA, boardB, boardTwoKings, boardTwoKings1x2, boardWithSideAKingCaptured, boardWithSideBKingCaptured, board1x2_withTwoKingsFacing, board3x2_withTwoKingsFacingAndOpportunisticTargets, board3x3_withTraps, board1x3_suicideForFirstMover, board1x4_victoryForFirstMover, board2x3_manoeuveringForStandoff, board3x3_victoryWithDrops} from './common-test-boards.js';
 import {Side} from '../src/side.js';
 import {Chick, Hen, Elephant, Giraffe, Lion} from '../src/piece-set.js';
 import {Move, BoardMove} from '../src/moves.js';
@@ -284,7 +284,6 @@ describe('bestMove', function() {
             });
         });
     });
-
     it('selects the right one - scenario 1x2 board two kings facing each other, first mover wins', function() {
         const board = board1x2_withTwoKingsFacing();
         [1,2,3,40].forEach( (depth) => {
@@ -302,7 +301,6 @@ describe('bestMove', function() {
             });
         });                
     });
-
     it('selects the right one - scenario 1x3 board defeat for first mover', function() {
         const board = board1x3_suicideForFirstMover();
         [1,2,3,40].forEach( (depth) => {
@@ -315,7 +313,6 @@ describe('bestMove', function() {
             });
         });
     });
-
     it('selects the right one - scenario 1x4 board victory for first mover', function() {
         const board = board1x4_victoryForFirstMover();
         [1,2,3,40].forEach( (depth) => {
@@ -349,7 +346,7 @@ describe('bestMove', function() {
             board = board.move(move.vector.from, move.vector.to);
             sideAMove=!sideAMove;
         }
-    });        
+    });
     it('selects the right one - scenario two kings with opportunistic targets', function() {
         const board = board3x2_withTwoKingsFacingAndOpportunisticTargets();
             [1,2,3,4].forEach( (depth) => {
@@ -371,5 +368,13 @@ describe('bestMove', function() {
             move = bestMove(board, true, 2, model000, PIECE_SET);
             assert.equal(move.toString(), '(0~1)=>(1~0)');            
         });
+    });
+    it(`selects the right one - with drops`, function() {
+        this.timeout(10000);        
+        const board = board3x3_victoryWithDrops();
+        let move = bestMove(board, true, 1, model000, PIECE_SET);
+        assert.equal(move.toString(), 'C=>2~1');
+        move = bestMove(board, false, 1, model000, PIECE_SET);
+        assert(move.toString()==='g=>2~2' || move.toString()==='g=>~2');
     });
 });

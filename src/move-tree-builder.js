@@ -41,7 +41,6 @@ function moveTreeBuilder(gb: GameBoard, sideToMoveNext: boolean, depth: number):
 }
 
 function bestMove(gb: GameBoard, sideA: boolean, depth: number, evalModel: EvaluationModel, pieceSet: Array<IConcretePiece>): any { // BoardMove | DropMove // TODO
-    // TOOD: I am left here, this should return either BoardMove or DropMove (fully qualified piece - not the side only superclass)
     const moveTree: Node<GameBoard, string> = moveTreeBuilder(gb, sideA, depth);
     evaluateLeaves(moveTree, evalModel);
     if (false)

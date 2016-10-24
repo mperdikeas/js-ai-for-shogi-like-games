@@ -212,6 +212,24 @@ L
     return gb;
 }
 
+function board3x3_victoryWithDrops() {
+    const pieceSet = createPieceSet([Chick, Hen, Elephant, Giraffe, Lion]);
+    const notation = 'l@1~2 * c@1~0, l@2~0, c@0~1, e@1~1';
+    const cb = new CaptureBag();
+    cb.capture(new PieceOnSide(Chick, false));
+    cb.capture(new PieceOnSide(Giraffe, true));        
+    const gb = GameBoard.create(3, 3, false, 0, pieceSet, notation, cb);
+    assert.equal(gb.toStringFancy().trim(),              
+`
+.cl
+ce.
+.L.
+--
+Cg
+`.trim());
+    return gb;
+}
+
 
 exports.boardA                                             = boardA;
 exports.boardB                                             = boardB;
@@ -225,3 +243,4 @@ exports.board3x3_withTraps                                 = board3x3_withTraps;
 exports.board1x3_suicideForFirstMover                      = board1x3_suicideForFirstMover;
 exports.board1x4_victoryForFirstMover                      = board1x4_victoryForFirstMover;
 exports.board2x3_manoeuveringForStandoff                   = board2x3_manoeuveringForStandoff;
+exports.board3x3_victoryWithDrops                          = board3x3_victoryWithDrops;
