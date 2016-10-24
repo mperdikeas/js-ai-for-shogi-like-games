@@ -1,6 +1,6 @@
 {
   "name": "ai-for-shogi-like-games",
-  "version": "0.0.14",
+  "version": "0.0.18",
   "description": "",
   "main": "lib/index.js",
   "scripts": {

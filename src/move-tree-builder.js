@@ -63,9 +63,9 @@ function bestMove(gb: GameBoard, sideA: boolean, depth: number, evalModel: Evalu
                 currentlyBestScore = scoreSelector(v.adornment, currentlyBestScore);
             }
         });
-        if (selectedEdge!=null)
+        if (selectedEdge!=null) {
             return Move.fromString(pieceSet, selectedEdge);
-        else throw new Error(`inconceivable that it was impossible to select an edge`);
+        } else throw new Error(`inconceivable that it was impossible to select an edge`);
     } else throw new Error(`inconceivable to ask for bestMove on a leaf!`);
 }
 
