@@ -47,8 +47,7 @@ class GameBoard {
         this.captured               = captured;
     }
 
-    static create(width: number, height: number, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet, boardNotation: string, _captureBag: ?CaptureBag): GameBoard {
-        let captureBag = _captureBag || new CaptureBag();
+    static create(width: number, height: number, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet, boardNotation: string, captureBag: CaptureBag  = new CaptureBag()): GameBoard {
         const [sideA, sideB] = boardNotation.split('*');
         assert(width.between (0, MAX_BOARD_DIMENSION));
         assert(height.between(0, MAX_BOARD_DIMENSION));
@@ -57,6 +56,40 @@ class GameBoard {
         GameBoard.populate(board, width, height, pieceSet, false, sideB);
 
         return new GameBoard(width, height, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag);
+    }
+
+
+    static createFromFancy(fancy2dBoardNotation: string, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet): GameBoard {
+        fancy2dBoardNotation = fancy2dBoardNotation.trim();
+        const CAPTURE_BAG_SEPARATOR_FROM_BOARD = '--';
+        let lines: Array<string> = fancy2dBoardNotation.split(/\r?\n/);
+        const captureBag : ?CaptureBag = (()=>{
+            if (lines[lines.length-1] === CAPTURE_BAG_SEPARATOR_FROM_BOARD)
+                return null;
+            else
+                return CaptureBag.fromString(lines[lines.length-1], pieceSet);
+        })();
+        let X;
+        let Y = 0;
+        const board: Map<string, IConcretePieceOnSide> = new Map(); 
+        for (let i = 0 ; i < lines.length ; i++) {
+            if (lines[i]===CAPTURE_BAG_SEPARATOR_FROM_BOARD)
+                break;
+            else {
+                Y++;
+                if (X===undefined)
+                    X = lines[i].length;
+                else if (X!=lines[i].length)
+                    throw new Error(`two different X dimensions encountered: ${X} and ${lines[i].length}`);
+                for (let j = 0; j < lines[i].length ; j++) {
+                    if (lines[i][j]!=='.') {
+                        board.set( (new Point(j, i)).toString()
+                                   , PieceOnSide.fromString(pieceSet.pieces.values() , lines[i][j]));
+                    }
+                }
+            }
+        }
+        return new GameBoard(X, Y, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag);
     }
 
     reflection(): GameBoard { // returns a game board that is the reflection of this one
@@ -529,7 +562,10 @@ class GameBoard {
             rows.push(column.join(''));
         }
         const board = rows.join('\n');
-        return `${board}\n--\n${gb.captured.toString()}`;
+        if (gb.captured!==null)
+            return `${board}\n--\n${gb.captured.toString()}`;
+        else
+            return `${board}\n--`;
     }
     static toStringFancyBoardsOnly(__gameBoards: Map<string, GameBoard>): string {
         const _gameBoards: Array<GameBoard> = GameBoard.boardsOnly(__gameBoards);

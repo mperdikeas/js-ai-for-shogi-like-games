@@ -20,6 +20,33 @@ class CaptureBag {
             this.capturedPieces = arguments[0];
         }
     }
+    static fromString(notation: string, pieceSet: PieceSet): CaptureBag {
+        const rv: Array<IConcretePieceOnSide> = [];
+        for (let i = 0 ; i < notation.length ; i++) {
+            const code = notation[i];
+            const concretePiece: IConcretePiece = pieceSet.fromCode(code.toLowerCase());
+            rv.push(new PieceOnSide(concretePiece, code===code.toUpperCase()));
+        }
+        return new CaptureBag(rv);
+    }
+    
+    equals(o: CaptureBag): boolean {
+        // two capture bags are equal if they contain the same population of pieces (obviously taking sides into account)
+        // therefore the strategy is to create maps counting the number of pieces for each code (case/side-SENSITIVE) and then use lodash _.isEqual to compare the maps
+        const m1 = this.countOfPieces();
+        const m2 =    o.countOfPieces();
+        return _.isEqual(m1, m2);
+    }
+    countOfPieces() {
+        const rv = new Map();
+        this.capturedPieces.forEach( (x)=> {
+            if (!rv.has(x.toString()))
+                rv.set(x.toString(), 0);
+            let count: int = rv.get(x.toString());
+            rv.set(x.toString(), count+1);
+        });
+        return rv;
+    }
     piecesOfThisSide(forSideA: boolean): Array<IConcretePiece> {
         return this.capturedPieces.filter(x => forSideA===x.isSideA).map ( x=> x.piece );
     }

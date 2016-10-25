@@ -1,6 +1,6 @@
 {
   "name": "ai-for-shogi-like-games",
-  "version": "0.0.20",
+  "version": "0.0.23",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -51,6 +51,7 @@
     "babel-register": "^6.14.0",
     "geometry-2d": "*",
     "lodash": "^4.10.0",
-    "source-map-support": "^0.4.0"
-  }
+    "source-map-support": "0.4.3"
+  },
+  "dependencies.source-map-support.README": "https://github.com/evanw/node-source-map-support/issues/155"
 }
