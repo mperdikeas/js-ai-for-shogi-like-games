@@ -258,8 +258,10 @@ class GameBoard {
                 const dropMove = new DropMove(pcOnSide, pn);
                 assert(!rv.has(dropMove.toString()), `Weird, drop move ${dropMove.toString()} has alredy been encountered`);
                 rv.set(dropMove.toString(), newBoard);
-            } else
-                throw new Error('bad choreography');
+            } else {
+                if (!this.isPromotionZoneForSide(pn, sideA)) // the only possibility of an empty square returning null on drop is for it to be in the promotion zone of the respective side
+                    throw new Error('bad choreography');
+            }
         });
         return rv;
     }
