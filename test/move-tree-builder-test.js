@@ -16,7 +16,7 @@ import {piecesSet1AsArray, piecesSet1AsSet} from './common-piece-sets.js';
 
 
 const PIECE_SET = [Chick, Hen, Elephant, Giraffe, Lion];
-if (true)
+
 describe('moveTreeBuilder and sideThatMovesNext', function() {
     it('does not break', function() {
         this.timeout(4000);
@@ -258,18 +258,17 @@ L.l
 --`.trim();
         const gb = GameBoard.createFromFancy(notation2D, true, 1, piecesSet1AsSet());
         assert.equal(gb.toStringFancy().trim(), notation2D);
-        const tree = moveTreeBuilder( gb, false, 2);
-        assert.equal(sideThatMovesNext(tree), Side.B);            
-        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
-        console.log(s);
+        const tree = moveTreeBuilder( gb, false, 3);
+        assert.equal(sideThatMovesNext(tree), Side.B);
+        if (false) {
+            const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
+            console.log(s);
+        }
     });
-    // TODO: more work to be done here after [evaluateBoard] and [boardImmediateWinSide]
-    //       take an argument showing which side is moving next
 });
 
 
 
-if (true)
 describe('evaluateLeaves', function() {
     it('does not break', function() {
         this.timeout(20000);
@@ -287,7 +286,7 @@ describe('evaluateLeaves', function() {
     });
 });
 
-if (true)
+
 describe('evaluateLeaves and pullEvaluationsUp', function() {
     it('does not break', function() {
         this.timeout(100000);
@@ -308,7 +307,7 @@ describe('evaluateLeaves and pullEvaluationsUp', function() {
     });
 });
 
-if (true)
+
 describe('bestMove', function() {
     it('does not break', function() {
         this.timeout(100000);

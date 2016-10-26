@@ -135,8 +135,9 @@ class Node<V, E> {
         } else throw new Error('bug3');
     }
 
-    print(printAdornment: boolean, _valuePrinter: ?ValuePrinter<V>): string {
-        let valuePrinter: ValuePrinter<V> = (_valuePrinter==null?(x)=>`${x}`:_valuePrinter);
+    print(printAdornment: boolean, _valuePrinter: ?ValuePrinter<V>, _adornPrinter: ?ValuePrinter<any>): string {
+        let valuePrinter: ValuePrinter<V>   = (_valuePrinter==null?(x)=>`${x}`:_valuePrinter);
+        let adornPrinter: ValuePrinter<any> = (_adornPrinter==null?(x)=>`${x}`:_adornPrinter);        
         const s: symbol = Symbol.for(TREE_NODE_ID_SYMBOL_KEY);// Symbol();
         let i: number = 0;
         const lines: Array<string> = [];
@@ -160,7 +161,7 @@ class Node<V, E> {
                     // $SuppressFlowFinding: access of computed property/element. Indexable signature not found in ...                    
                     let line: string = `node #${parentN[s]} ~~[${birthEdge}]~~> node #${n[s]} with value: ${valuePrinter(n.value)}`;
                     if (printAdornment)
-                        line+=`, adornment: ${n.adornment}`;
+                        line+=`, adornment: ${adornPrinter(n.adornment)}`;
                     lines.push(line);
                 } else throw new Error('bug');
             }

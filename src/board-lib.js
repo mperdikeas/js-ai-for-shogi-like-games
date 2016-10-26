@@ -523,7 +523,29 @@ class GameBoard {
             const kingBUncheckedLastLine: boolean = this.kingIsOnLastLineUnchecked(false);
             if (( kingAUncheckedLastLine)  && (!kingBUncheckedLastLine)) return true;
             if ((!kingAUncheckedLastLine)  && ( kingBUncheckedLastLine)) return false;
-            if ( this.winIfKingReachesFarEnd && ( kingAUncheckedLastLine) && ( kingBUncheckedLastLine) ) throw new Error(`GB:BKULL I shoud never be asked to evalute a position with both kings unchecked on the last line, such as the following:\n${this.toStringFancy()}`);
+            if ( kingAUncheckedLastLine && kingBUncheckedLastLine && (this.height>=4) ) throw new Error(`GB:BKULL I shoud never be asked to evalute a position with both kings unchecked on the last line when the height of the board is greater than or equal to 4, such as the following:\n${this.toStringFancy()}`);
+            if ( kingAUncheckedLastLine && kingBUncheckedLastLine && (this.height < 4) ) {
+/* This is a very weird edge case that can only occur in boards with a height less than 4.
+   You can arrive at this situation as follows:
+
+   (A)      (B)      (C)
+        =>       => 
+   ...      ...      L..
+   L.l      L..      ...
+   ...      .l.      .l.
+
+   The crux of the matter is that in the move (A->B) White does not win even though his King (l) has reached
+   the last rank. This is because the white King (l) is in check in position (B). Then, if the black King
+   moves to his own last rank in position (C) we have a situation where both kings reside on their respective
+   last ranks. In this case I have decided to pronounce the situation as not winning for either side and let
+   the game go on.
+   
+   NB1. This can only happen in boards of height less than or equal to 3.
+   NB2. The Black King (L) in (B) could have won the game by capturing the Whtie King (l). This is irrelevant
+        for this discussion.
+*/
+                return null;
+            }
         }
         return null;
     }

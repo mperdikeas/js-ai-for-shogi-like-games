@@ -49,18 +49,25 @@ function bestMove(gb: GameBoard, sideA: boolean, depth: number, evalModel: Evalu
     if (false)
     console.log(`\n\n\n**** When evaluations are pulled up:\n${moveTree.print(true)}`);
     const scoreSelector : (a: number, b: number)=> number = sideA? Math.max: Math.min;
+    const cmp  : (a: number, b: number) => number = sideA? (a,b)=>a>b : (a,b)=>a<b;
     let currentlyBestScore: number  = sideA? -Infinity: Infinity;
+    let currentlyShallowestDepth = Infinity;
     let selectedEdge: ?string = null;
     if (moveTree.children!=null) {
         moveTree.children.forEach( (v: Node<GameBoard, string>, e: string) => {
             assert(v.isAdorned());
-            if (selectedEdge === null) // initialize the selected edge (for hopeless situations where every move leads to the same infinity outcome and the if below would never be triggered)
+            if (selectedEdge === null) // initialize the selected edge (for hopeless situations where every move leads to the same infinity outcome and the if below would never be triggered) // TODO maybe I can lose that guard as the newly added currentlyShallowestDepth check should take care of this edge case
                 selectedEdge = e;
-            if (scoreSelector(v.adornment, currentlyBestScore)!=currentlyBestScore) {
+//            if ((scoreSelector(v.adornment.v, currentlyBestScore)!=currentlyBestScore) ||
+//                ((scoreSelector(v.adornment.v, currentlyBestScore)==currentlyBestScore) &&
+            if (cmp(v.adornment.v, currentlyBestScore) ||
+                ((v.adornment.v === currentlyBestScore) &&                 
+                 (v.adornment.d < currentlyShallowestDepth))) {
                 if (false)
-                console.log(`trying the edge ${e} led to a score of ${scoreSelector(v.adornment, currentlyBestScore)} which is better than the currently bestScore of ${currentlyBestScore}`);
+                    console.log(`trying the edge ${e} led to a score of ${v.adornment.v} which is preferrable (given moving side ${sideA?'side A':'side B'}) to that of ${currentlyBestScore} or the depth of ${v.adornment.d} is shallower than the currently shallowest depth of ${currentlyShallowestDepth}`);
                 selectedEdge = e;
-                currentlyBestScore = scoreSelector(v.adornment, currentlyBestScore);
+                currentlyBestScore = scoreSelector(v.adornment.v, currentlyBestScore);
+                currentlyShallowestDepth = v.adornment.d;
             }
         });
         if (selectedEdge!=null) {
@@ -69,21 +76,33 @@ function bestMove(gb: GameBoard, sideA: boolean, depth: number, evalModel: Evalu
     } else throw new Error(`inconceivable to ask for bestMove on a leaf!`);
 }
 
-function dynamicEvaluationOfBoard(gb: GameBoard, sideA: boolean, depth: number, evalModel: EvaluationModel, pieceSet: Array<IConcretePiece>): number {
-    const moveTree: Node<GameBoard, string> = moveTreeBuilder(gb, sideA, depth);
+function dynamicEvaluationOfBoard(gb: GameBoard, sideAIsMoving: boolean, depth: number, evalModel: EvaluationModel, pieceSet: Array<IConcretePiece>): number {
+    const moveTree: Node<GameBoard, string> = moveTreeBuilder(gb, sideAIsMoving, depth);
     evaluateLeaves(moveTree, evalModel);
     if (false)
-    console.log(`\n\n\n**** Upon leaves evaluation:\n${moveTree.print(true)}`);
-    pullEvaluationsUp(sideA, moveTree);
+        console.log(`\n\n\n**** Upon leaves evaluation:\n${moveTree.print(true, null, (x)=>{
+if (x===null)
+    return 'null';
+else
+    return x.v;
+})}`);
+    pullEvaluationsUp(sideAIsMoving, moveTree);
+    if (false)
+        console.log(`\n\n\n**** Upon leaves pulling evaluation:\n${moveTree.print(true, null, (x)=>{
+if (x===null)
+    return 'null';
+else
+    return x.v;
+})}`);    
     if (moveTree.adornment!=null) {
-        return moveTree.adornment;
+        return moveTree.adornment.v;
     } else throw new Error('root node should be adorned after evaluations are pulled up');
 }
 
 function evaluateLeaves(moveTree: Node<GameBoard, string>, evalModel: EvaluationModel): void {
     function adornLeaf(node: Node<GameBoard, string> ):void {
         if (node.isLeaf())
-            node.adorn(evalModel.evaluateBoard(node.value));
+            node.adorn({v: evalModel.evaluateBoard(node.value), d: 0});
     }
     moveTree.depthFirstTraversal(adornLeaf, true);
 }
@@ -98,8 +117,19 @@ function pullEvaluationsUp(sideA: boolean, currentNode: Node<GameBoard, string>,
     }
     if (currentNode.allChildrenSatisfy(isAdorned)) {
         let allChildrenValues: Array<any> = currentNode.getChildrenAdornments();
-        let selectorToUse = sideA?Math.max:Math.min;
-        let thisNodeAdorn = selectorToUse.apply(null, allChildrenValues);
+        let thisNodeAdorn = (()=>{
+            let cmp = sideA?(a,b)=>a>b:(a,b)=>a<b;
+            let bestNodeAdornSoFar;
+            allChildrenValues.forEach ( (adorn) => {
+                if (bestNodeAdornSoFar===undefined)
+                    bestNodeAdornSoFar = Object.assign({}, adorn, {d: adorn.d+1});
+                else {
+                    if (cmp(adorn.v, bestNodeAdornSoFar.v))
+                        bestNodeAdornSoFar = Object.assign({}, adorn, {d: adorn.d+1});
+                }
+            });
+            return bestNodeAdornSoFar;
+        })();
         assert(currentNode.adorn(thisNodeAdorn)===null);
     } else {
         if (assertNoRecursion)
