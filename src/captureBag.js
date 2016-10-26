@@ -37,6 +37,9 @@ class CaptureBag {
         const m2 =    o.countOfPieces();
         return _.isEqual(m1, m2);
     }
+    isEmpty(): boolean {
+        return _.isEmpty(this.capturedPieces);
+    }
     countOfPieces() {
         const rv = new Map();
         this.capturedPieces.forEach( (x)=> {

@@ -48,7 +48,7 @@ class PieceOnSide {
             if (piece.code.toUpperCase()===s)
                 rvs.push ( new PieceOnSide(piece, true) );
         }
-        assert( (rvs.length===1) );
+        assert.equal( rvs.length, 1 );
         assert  (rvs[0] instanceof PieceOnSide);
         return rvs[0];
     }

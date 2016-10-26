@@ -12,7 +12,11 @@ import {Side} from '../src/side.js';
 import {Chick, Hen, Elephant, Giraffe, Lion} from '../src/piece-set.js';
 import {Move, BoardMove} from '../src/moves.js';
 
+import {piecesSet1AsArray, piecesSet1AsSet} from './common-piece-sets.js';
+
+
 const PIECE_SET = [Chick, Hen, Elephant, Giraffe, Lion];
+if (true)
 describe('moveTreeBuilder and sideThatMovesNext', function() {
     it('does not break', function() {
         this.timeout(4000);
@@ -29,7 +33,7 @@ describe('moveTreeBuilder and sideThatMovesNext', function() {
     it('works on board with two kings and 1 next move with sideA moving', function() {
         const tree = moveTreeBuilder(boardTwoKings(), true, 1);
         assert.equal(sideThatMovesNext(tree), Side.A);
-        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}`);
+        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
         assert.equal(s.trim(),
                      `ROOT node #0 with value: 
 l...
@@ -63,7 +67,7 @@ l...
     it('works on board with two kings and 1 next move with sideB moving', function() {
         const tree = moveTreeBuilder(boardTwoKings(), false, 1);
         assert.equal(sideThatMovesNext(tree), Side.B);        
-        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}`);
+        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
         assert.equal(s.trim(),
                      `ROOT node #0 with value: 
 l...
@@ -97,7 +101,7 @@ node #0 ~~[(0~0)=>(1~1)]~~> node #3 with value:
     it('works on board with two kings and 2 next move with sideA moving', function() {
         const tree = moveTreeBuilder(boardTwoKings(), true, 2);
         assert.equal(sideThatMovesNext(tree), Side.A);        
-        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}`);
+        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
         assert.equal(s.trim(),
                      `ROOT node #0 with value: 
 l...
@@ -196,9 +200,9 @@ node #9 ~~[(0~0)=>(1~1)]~~> node #12 with value:
         [1, 2, 3, 100].forEach( (n) => {
             const tree = moveTreeBuilder(boardTwoKings1x2(), true, 1);
             assert.equal(sideThatMovesNext(tree), Side.A);
-            const s = tree.print(false, (x)=>`\n${x.toStringFancy()}`);
-            assert.equal(s, `
-ROOT node #0 with value: 
+            const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
+            assert.equal(s,
+`ROOT node #0 with value: 
 l
 L
 --
@@ -208,16 +212,16 @@ L
 .
 --
 L
-`.trim());
+`);
         });
     });
     it('works on board with small board of two kings and 1 next move with sideB moving and recursion terminates no matter how many steps', function() {
         [1,2,3,100].forEach( (n) => {
             const tree = moveTreeBuilder( boardTwoKings1x2(), false, 1);
             assert.equal(sideThatMovesNext(tree), Side.B);            
-            const s = tree.print(false, (x)=>`\n${x.toStringFancy()}`);
-            assert.equal(s, `
-ROOT node #0 with value: 
+            const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
+            assert.equal(s,
+`ROOT node #0 with value: 
 l
 L
 --
@@ -227,12 +231,45 @@ node #0 ~~[(0~0)=>(0~1)]~~> node #1 with value:
 l
 --
 l
-`.trim());
+`);
         });
-    });    
-    
+    });
 });
 
+describe('checks on whether Kings are on last line unchecked', function() {
+    it('works on 3X3 board', function() {
+        const notation2D = `
+...
+L..
+..l
+--`.trim();
+        const gb = GameBoard.createFromFancy(notation2D, true, 1, piecesSet1AsSet());
+        assert.equal(false, gb.kingIsOnLastLineUnchecked(true));
+        assert.equal(true , gb.kingIsOnLastLineUnchecked(false));
+    });
+});
+
+describe('new batch of tests on moveTreeBuilder', function() {
+    it('works on 3X3 board with two kings who can win by reaching the end', function() {
+        const notation2D = `
+...
+L.l
+...
+--`.trim();
+        const gb = GameBoard.createFromFancy(notation2D, true, 1, piecesSet1AsSet());
+        assert.equal(gb.toStringFancy().trim(), notation2D);
+        const tree = moveTreeBuilder( gb, false, 2);
+        assert.equal(sideThatMovesNext(tree), Side.B);            
+        const s = tree.print(false, (x)=>`\n${x.toStringFancy()}\n`);
+        console.log(s);
+    });
+    // TODO: more work to be done here after [evaluateBoard] and [boardImmediateWinSide]
+    //       take an argument showing which side is moving next
+});
+
+
+
+if (true)
 describe('evaluateLeaves', function() {
     it('does not break', function() {
         this.timeout(20000);
@@ -250,7 +287,7 @@ describe('evaluateLeaves', function() {
     });
 });
 
-
+if (true)
 describe('evaluateLeaves and pullEvaluationsUp', function() {
     it('does not break', function() {
         this.timeout(100000);
@@ -271,7 +308,7 @@ describe('evaluateLeaves and pullEvaluationsUp', function() {
     });
 });
 
-
+if (true)
 describe('bestMove', function() {
     it('does not break', function() {
         this.timeout(100000);

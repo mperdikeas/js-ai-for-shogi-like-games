@@ -43,8 +43,20 @@ ce.
 `.trim();
             assert.equal(gb.toStringFancy().trim(), notation2D);
             const gb2 = GameBoard.createFromFancy(notation2D, false, 0, pieceSet);
-            assert.equal(gb2.toStringFancy(), notation2D);
-        });        
+            assert.equal(gb2.toStringFancy().trim(), notation2D);
+        });
+        it('should throw on malformed notations', function() {
+            const pieceSet = piecesSet();
+            const problematicNotation = `
+.cl
+ce..
+.L.
+--
+`.trim();
+            assert.throws( ()=> {
+                GameBoard.createFromFancy(problematicNotation, false, 0, pieceSet);
+            }, Error);
+        });
     });
 });
 

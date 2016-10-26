@@ -119,7 +119,7 @@ describe('GameBoard', function () {
 `l
 L
 --
-`);
+`.trim());
            });
         it('should work on a 2x2 grid'
            , function () {
@@ -130,7 +130,7 @@ L
 `lH
 LC
 --
-`);
+`.trim());
            });        
     });
 
@@ -189,7 +189,7 @@ LC
 `lH
 LC
 --
-`;                         
+`.trim();                         
                assert.equal(gb1.toStringFancy(), STATE_1);
 
                let gb2 = gb1.clone();
@@ -269,7 +269,7 @@ L`.trim();
 `lH
 LC
 --
-`;                         
+`.trim();                         
                assert.equal(gb1.toStringFancy(), STATE_1);
 
                const gb2 = gb1.move(new Point(0, 0), new Point(1, 0));
@@ -295,7 +295,7 @@ c`;
 `cl
 LC
 --
-`;
+`.trim();
                assert.equal(gb3.toStringFancy(), STATE_3);
            });
         it('no drops allowed in promotion zone', function() {
@@ -324,14 +324,14 @@ LC
 `lH
 LC
 --
-`;                         
+`.trim();                         
                assert.equal(gb1.toStringFancy(), STATE_1);
                const gb2 = gb1.reflection();
                const STATE_2 =
 `cl
 hL
 --
-`;
+`.trim();
                assert.equal(gb2.toStringFancy(), STATE_2);
                const gb3 = gb2.move(new Point(1,1), new Point(0,0));
                const STATE_3 =
@@ -358,7 +358,7 @@ c`;
 `l.
 L.
 --
-`);   
+`.trim());   
             it('should throw on bad arguments - no piece', function () {
                 assert.throws(()=>{gb.nextStatesByMovingPieceOnAParticularSquare(new Point(1,0));}, /^AssertionError: B-NSBMP-CNP/);
                 assert.throws(()=>{gb.nextStatesByMovingPieceOnAParticularSquare(new Point(1,1));}, /^AssertionError: B-NSBMP-CNP/);
@@ -371,7 +371,7 @@ L.
 `hl
 LH
 --
-`);
+`.trim());
             it('should move correctly #1', function() {
                 const newStates = gb.nextStatesByMovingPieceOnAParticularSquare(new Point(0,1));
                 const EXPECTED =
@@ -401,7 +401,7 @@ c  I  l`;
 `l.
 L.
 --
-`);   
+`.trim());   
             it('should move correctly sideA', function() {
                 const newStates  = gb.nextStatesByMovingPieceOnAParticularSquare(new Point(0,1));
                 const newStates2 = gb.nextStates(true); // should be the same in this particular case
@@ -440,7 +440,7 @@ l  I    I  `;
 `hl
 LH
 --
-`);
+`.trim());
             it('should move correctly', function() {
                 const newStates = gb.nextStates(true);
                 const EXPECTED =
@@ -561,7 +561,7 @@ ce  I  cel  I  ce  I  e  I  e  I  c  I  c`.trim();
 `CL
 lc
 --
-`);
+`.trim());
                 const allPoints = [new Point(0,0), new Point(0,1), new Point(1,0), new Point(1,1)];
                 for (let i = 0 ; i < allPoints.length ; i++) {
                     for (let j = 0 ; j < allPoints.length ; j++) {
@@ -578,7 +578,7 @@ lc
 `CL
 lc
 --
-`);
+`.trim());
                 const allPoints = [new Point(0,0), new Point(0,1), new Point(1,0), new Point(1,1)];                
                 for (let i = 0 ; i < allPoints.length ; i++) {
                     for (let j = 0 ; j < allPoints.length ; j++) {
@@ -600,7 +600,7 @@ lc
 ..
 CL
 --
-`);
+`.trim());
                 const promotionVectors=[new Vector(new Point(0,0), new Point(0,2)),
                                         new Vector(new Point(0,0), new Point(1,2)),
                                         new Vector(new Point(1,2), new Point(0,0)),
@@ -635,7 +635,7 @@ CL
 `CL
 lc
 --
-`);
+`.trim());
                 const piecesUnderAttack = [new Point(0,0), new Point(0,1), new Point(1,1)];
                 piecesUnderAttack.forEach( p => {
                     assert(gb.isPieceUnderAttack(p));
@@ -656,7 +656,7 @@ lc
 eE.
 lc.
 --
-`);
+`.trim());
                 const piecesUnderAttack    = [new Point(1,0), new Point(0,1), new Point(1,1), new Point(0,2)];
                 const piecesNotUnderAttack = [new Point(0,0), new Point(1,2)];
                 piecesUnderAttack.forEach( p => {
@@ -729,7 +729,7 @@ lE..LG
 `CL
 lc
 --
-`);
+`.trim());
                 assert.equal(gb.numOfPossibleMoves(true), 2);
                 assert.equal(gb.numOfPossibleMoves(false), 2);
 

@@ -24,6 +24,8 @@ import {Node}                      from './trees.js';
 import {Side}                      from './side.js';
 import {Move, BoardMove, DropMoveNoPieceInformation, DropMove} from './moves.js';
 
+const CAPTURE_BAG_SEPARATOR_FROM_BOARD = '--';
+
 class GameBoard {
     width                    : number;
     height                   : number;
@@ -37,7 +39,7 @@ class GameBoard {
                 winIfKingReachesFarEnd: boolean,
                 breadthOfPromotionZone: number,
                 board: Map<string, IConcretePieceOnSide>,
-                captured: CaptureBag) {
+                captured: CaptureBag = new CaptureBag()) {
         this.width                  = width;
         this.height                 = height;
         this.winIfKingReachesFarEnd = winIfKingReachesFarEnd;
@@ -47,7 +49,7 @@ class GameBoard {
         this.captured               = captured;
     }
 
-    static create(width: number, height: number, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet, boardNotation: string, captureBag: CaptureBag  = new CaptureBag()): GameBoard {
+    static create(width: number, height: number, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet, boardNotation: string, captureBag: ?CaptureBag): GameBoard {
         const [sideA, sideB] = boardNotation.split('*');
         assert(width.between (0, MAX_BOARD_DIMENSION));
         assert(height.between(0, MAX_BOARD_DIMENSION));
@@ -55,13 +57,14 @@ class GameBoard {
         GameBoard.populate(board, width, height, pieceSet, true , sideA);
         GameBoard.populate(board, width, height, pieceSet, false, sideB);
 
-        return new GameBoard(width, height, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag);
+        return new GameBoard(width, height, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag===null?undefined:captureBag);
     }
+
 
 
     static createFromFancy(fancy2dBoardNotation: string, winIfKingReachesFarEnd: boolean, breadthOfPromotionZone: number, pieceSet: PieceSet): GameBoard {
         fancy2dBoardNotation = fancy2dBoardNotation.trim();
-        const CAPTURE_BAG_SEPARATOR_FROM_BOARD = '--';
+        
         let lines: Array<string> = fancy2dBoardNotation.split(/\r?\n/);
         const captureBag : ?CaptureBag = (()=>{
             if (lines[lines.length-1] === CAPTURE_BAG_SEPARATOR_FROM_BOARD)
@@ -89,7 +92,7 @@ class GameBoard {
                 }
             }
         }
-        return new GameBoard(X, Y, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag);
+        return new GameBoard(X, Y, winIfKingReachesFarEnd, breadthOfPromotionZone, board, captureBag===null?undefined:captureBag);
     }
 
     reflection(): GameBoard { // returns a game board that is the reflection of this one
@@ -514,12 +517,13 @@ class GameBoard {
             if (!sideAKingIsCaptured &&  sideBKingIsCaptured) return true;
             if ( sideAKingIsCaptured && sideBKingIsCaptured ) throw new Error(`I shoud never be asked to evalute a position with both kings captured such as the following:\n${this.toStringFancy()}`);
         }
+        if (this.winIfKingReachesFarEnd)
         {   // check for kings that've reached the last line and are unchecked
             const kingAUncheckedLastLine: boolean = this.kingIsOnLastLineUnchecked( true);
-            const kinthisUncheckedLastLine: boolean = this.kingIsOnLastLineUnchecked(false);
-            if (( kingAUncheckedLastLine)  && (!kinthisUncheckedLastLine)) return true;
-            if ((!kingAUncheckedLastLine)  && ( kinthisUncheckedLastLine)) return false;
-            if ( this.winIfKingReachesFarEnd && ( kingAUncheckedLastLine) && ( kinthisUncheckedLastLine) ) throw new Error(`GB:BKULL I shoud never be asked to evalute a position with both kings unchecked on the last line, such as the following:\n${this.toStringFancy()}`);
+            const kingBUncheckedLastLine: boolean = this.kingIsOnLastLineUnchecked(false);
+            if (( kingAUncheckedLastLine)  && (!kingBUncheckedLastLine)) return true;
+            if ((!kingAUncheckedLastLine)  && ( kingBUncheckedLastLine)) return false;
+            if ( this.winIfKingReachesFarEnd && ( kingAUncheckedLastLine) && ( kingBUncheckedLastLine) ) throw new Error(`GB:BKULL I shoud never be asked to evalute a position with both kings unchecked on the last line, such as the following:\n${this.toStringFancy()}`);
         }
         return null;
     }
@@ -562,10 +566,10 @@ class GameBoard {
             rows.push(column.join(''));
         }
         const board = rows.join('\n');
-        if (gb.captured!==null)
-            return `${board}\n--\n${gb.captured.toString()}`;
+        if (!gb.captured.isEmpty())
+            return `${board}\n${CAPTURE_BAG_SEPARATOR_FROM_BOARD}\n${gb.captured.toString()}`;
         else
-            return `${board}\n--`;
+            return `${board}\n${CAPTURE_BAG_SEPARATOR_FROM_BOARD}`;
     }
     static toStringFancyBoardsOnly(__gameBoards: Map<string, GameBoard>): string {
         const _gameBoards: Array<GameBoard> = GameBoard.boardsOnly(__gameBoards);
