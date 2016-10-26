@@ -1003,8 +1003,8 @@ describe('EvaluationModel', function() {
             const tests = [ [ true, 100, 10], [false, 0, 0] ];
             tests.forEach ( ([winOnFarEnd, sideAKinglyBonus, sideBKinglyBonus])=> {
                 const gb = boardA(winOnFarEnd);
-                assert.equal(model000._evalPieceValues(gb, true), sideAKinglyBonus+1+5+4+8*1.3);
-                assert.equal(model000._evalPieceValues(gb, false), sideBKinglyBonus+1+8+4*1.3);
+                assert.equal(model000._evalPieceValues(gb, true), sideAKinglyBonus+1+5+4+8*model000.offBoardMultiplier);
+                assert.equal(model000._evalPieceValues(gb, false), sideBKinglyBonus+1+8+4*model000.offBoardMultiplier);
             });
         });
         it('is working on a board with a promotion zone of breadth 1',function() {
@@ -1012,8 +1012,8 @@ describe('EvaluationModel', function() {
             tests.forEach ( ([winOnFarEnd, sideAKinglyBonus, sideBKinglyBonus])=> {            
                 const gb = boardA(winOnFarEnd);
                 gb.breadthOfPromotionZone = 1;
-                assert.equal(model000._evalPieceValues(gb, true), sideAKinglyBonus+1+5*0.9+5+4+8*1.3);
-                assert.equal(model000._evalPieceValues(gb, false), sideBKinglyBonus+1+5*0.1+8+4*1.3);
+                assert.equal(model000._evalPieceValues(gb, true), sideAKinglyBonus+1+5*0.9+5+4+8*model000.offBoardMultiplier);
+                assert.equal(model000._evalPieceValues(gb, false), sideBKinglyBonus+1+5*0.1+8+4*model000.offBoardMultiplier);
             });
         });            
     });

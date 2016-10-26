@@ -11,7 +11,7 @@ const model000: EvaluationModel  = (function() {
     pieceValues.set(     Hen, 5);
     pieceValues.set(Elephant, 4);
     pieceValues.set( Giraffe, 8);
-    const offBoardMul                           = 1.3;
+    const offBoardMul                           =0.75; // wish to penalize off-board pieces but not too much as they can be dropped practically anywhere on the board
     const bonusForEachPossibleMove              =   1;
     const malusForEachPossibleMoveOfTheOpponent =  -1;
     const royalDistanceFromPromotionZoneBonus = [100,  50,  10];

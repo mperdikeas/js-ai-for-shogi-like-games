@@ -31,7 +31,6 @@ class EvaluationModel {
         assert(malusForEachPossibleMoveOfTheOpponent<=0);
         assert(bonusForEnemyLionUnderCheck>=0);
         assert(malusForFriendlyLionUnderCheck<=0);
-        assert(offBoardMultiplier>=1);
         this.pieceValues                           = pieceValues;
         this.royalDistanceFromFarEndBonus   = royalDistanceFromFarEndBonus;
         this.multipliersForDistFromPromotionZone   = multipliersForDistFromPromotionZone;
