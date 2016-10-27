@@ -15,8 +15,6 @@ import {Move, BoardMove} from '../src/moves.js';
 import {piecesSet1AsArray, piecesSet1AsSet} from './common-piece-sets.js';
 
 
-const PIECE_SET = [Chick, Hen, Elephant, Giraffe, Lion];
-
 describe('moveTreeBuilder and sideThatMovesNext', function() {
     it('does not break', function() {
         this.timeout(4000);
@@ -315,7 +313,7 @@ describe('bestMove', function() {
         boards.forEach( board => {
             [1,2].forEach( (depth)=> {
                 [true, false].forEach ( (sideA) => {
-                    let move = bestMove(board, sideA, depth, model000, PIECE_SET);
+                    let move = bestMove(board, sideA, depth, model000, piecesSet1AsArray());
                 });
             });
         });
@@ -323,16 +321,16 @@ describe('bestMove', function() {
     it('selects the right one - scenario 1x2 board two kings facing each other, first mover wins', function() {
         const board = board1x2_withTwoKingsFacing();
         [1,2,3,40].forEach( (depth) => {
-            let move = bestMove(board, true, depth, model000, PIECE_SET);
+            let move = bestMove(board, true, depth, model000, piecesSet1AsArray());
             assert.equal(move.toString(), '(0~1)=>(0~0)');
         });
         [1,2,3,40].forEach( (depth) => {
-            let move = bestMove(board, false, depth, model000, PIECE_SET);
+            let move = bestMove(board, false, depth, model000, piecesSet1AsArray());
             assert.equal(move.toString(), '(0~0)=>(0~1)');
         });
         [1,2,3,40].forEach( (depth) => {
             [true, false].forEach( (sideAMoves) => {
-                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, PIECE_SET);
+                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, piecesSet1AsArray());
                 assert.equal(evaluation, sideAMoves?Infinity:-Infinity);
             });
         });                
@@ -341,7 +339,7 @@ describe('bestMove', function() {
         const board = board1x3_suicideForFirstMover();
         [1,2,3,40].forEach( (depth) => {
             [true, false].forEach( (sideAMoves) => {
-                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, PIECE_SET);
+                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, piecesSet1AsArray());
                 if (depth>=2) // the suicidal nature of the board becomes evident only at depth >= 2
                     assert.equal(evaluation, sideAMoves?-Infinity:Infinity); // whichever sides moves first loses
                 else
@@ -353,7 +351,7 @@ describe('bestMove', function() {
         const board = board1x4_victoryForFirstMover();
         [1,2,3,40].forEach( (depth) => {
             [true, false].forEach( (sideAMoves) => {
-                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, PIECE_SET);
+                let evaluation: number = dynamicEvaluationOfBoard(board, sideAMoves, depth, model000, piecesSet1AsArray());
                 if (depth>=3) // the forced win nature of the board only becomes evident at depth >= 3
                     assert.equal(evaluation, sideAMoves?Infinity:-Infinity); // whichever sides moves first wins
                 else
@@ -365,7 +363,7 @@ describe('bestMove', function() {
         const board = board2x3_manoeuveringForStandoff();
         [2,3,4].forEach( (depth) => {
             [true, false].forEach( (sideAMove) => {
-                let move = bestMove(board, sideAMove, depth, model000, PIECE_SET);
+                let move = bestMove(board, sideAMove, depth, model000, piecesSet1AsArray());
                 assert.equal(move.toString(), sideAMove?'(0~2)=>(1~2)':'(0~0)=>(1~0)');
             });
         });
@@ -376,7 +374,7 @@ describe('bestMove', function() {
         const moveLoop: Array<string> = ['(0~2)=>(1~2)','(0~0)=>(1~0)', '(1~2)=>(0~2)', '(1~0)=>(0~0)'];
         for (let i = 0 ; i < 100; i++) {
             const minimumRequiredDepth = 2;
-            let move: Move = bestMove(board, sideAMove, minimumRequiredDepth, model000, PIECE_SET);
+            let move: Move = bestMove(board, sideAMove, minimumRequiredDepth, model000, piecesSet1AsArray());
             assert.equal(move.toString(), moveLoop[i % moveLoop.length]);
             assert(move instanceof BoardMove);
             board = board.move(move.vector.from, move.vector.to);
@@ -386,31 +384,31 @@ describe('bestMove', function() {
     it('selects the right one - scenario two kings with opportunistic targets', function() {
         const board = board3x2_withTwoKingsFacingAndOpportunisticTargets();
             [1,2,3,4].forEach( (depth) => {
-                let move = bestMove(board, true, depth, model000, PIECE_SET);
+                let move = bestMove(board, true, depth, model000, piecesSet1AsArray());
                 assert(['(0~1)=>(1~0)', '(1~1)=>(1~0)'].includes(move.toString()));
         });
         [1,2,3,4].forEach( (depth) => {
-            let move = bestMove(board, false, depth, model000, PIECE_SET);
+            let move = bestMove(board, false, depth, model000, piecesSet1AsArray());
             assert(['(0~0)=>(1~1)', '(1~0)=>(1~1)'].includes(move.toString()));
         });        
     });
     it('selects the right one - traps', function() {
         const board = board3x3_withTraps();
-        let move = bestMove(board, false, 1, model000, PIECE_SET);
+        let move = bestMove(board, false, 1, model000, piecesSet1AsArray());
         assert.equal(move.toString(), '(1~0)=>(2~1)');
-        move = bestMove(board, false, 2, model000, PIECE_SET);
+        move = bestMove(board, false, 2, model000, piecesSet1AsArray());
         assert.equal(move.toString(), '(1~0)=>(0~0)');
         [1,2,3,4].forEach( (depth) => {
-            move = bestMove(board, true, 2, model000, PIECE_SET);
+            move = bestMove(board, true, 2, model000, piecesSet1AsArray());
             assert.equal(move.toString(), '(0~1)=>(1~0)');            
         });
     });
     it(`selects the right one - with drops`, function() {
         this.timeout(10000);        
         const board = board3x3_victoryWithDrops();
-        let move = bestMove(board, true, 1, model000, PIECE_SET);
+        let move = bestMove(board, true, 1, model000, piecesSet1AsArray());
         assert.equal(move.toString(), 'C=>2~1');
-        move = bestMove(board, false, 1, model000, PIECE_SET);
+        move = bestMove(board, false, 1, model000, piecesSet1AsArray());
         assert(move.toString()==='g=>2~2' || move.toString()==='g=>~2');
     });
 });

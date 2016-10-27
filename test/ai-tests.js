@@ -4,8 +4,6 @@ import 'babel-polyfill';
 const assert     = require('assert');
 import _                            from 'lodash';
 import {PieceOnSide}                from '../src/piece.js';
-import {Chick, Hen, Lion}           from '../src/piece-set.js';
-import {Elephant, Giraffe}          from '../src/piece-set.js';
 import {createPieceSet}             from '../src/piece-set-factory.js';
 import {GameBoard}                  from '../src/board-lib.js';
 import {bestMove}                   from '../src/move-tree-builder.js';
