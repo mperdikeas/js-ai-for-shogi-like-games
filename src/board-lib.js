@@ -417,8 +417,8 @@ class GameBoard {
         return Point.fromString(kingsOfThisSide[0][0]);
     }
 
-    isKingUnderAttack(sideA: boolean): boolean {
-        const p : Point = this.locationOfKing(sideA);
+    isKingUnderAttack(sideAKing: boolean): boolean { // we are assuming that the opposite side is moving
+        const p : Point = this.locationOfKing(sideAKing);
         return this.isPieceUnderAttack(p);
     }
 

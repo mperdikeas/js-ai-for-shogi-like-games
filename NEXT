@@ -1,0 +1,12 @@
+[1] I am left to work in file [move-tree-builder.js]
+method [moveTreeBuilder] to put a floor to the recursion
+also in the case where a move would place our King in check
+(and to not create a node / link at all in such a case).
+
+To verify I have to confirm that the trees created are actually
+sparser. Also I have to deal with the edge case that there
+are no possible moves (if we take that into account) and so
+maybe throw an exception to prompt the AI to resign.
+
+[2] when the AI discovers a win path at more than one (1) move
+away it should taunt the user with a disparaging message.
