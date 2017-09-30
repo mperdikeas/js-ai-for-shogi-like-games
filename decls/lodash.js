@@ -8,5 +8,6 @@ declare module lodash {
     declare function some   <T>(coll: Array<T>, somePredicateFunction:  (t: T)=> boolean): boolean;
     declare function every  <T>(coll: Array<T>, somePredicateFunction:  (t: T)=> boolean): boolean;
     declare function includes <T>(coll: Array<T>, t: T): boolean;
-//    declare function map <T, V> (coll: Array<T>, someFunction: (t: T)=> V): Array<V>;
+    //    declare function map <T, V> (coll: Array<T>, someFunction: (t: T)=> V): Array<V>;
+    declare function isEqual(o1: any, o2: any): boolean;
 }

@@ -57,16 +57,16 @@ class Node<V, E> {
         if (this.children === null) {
             this.children = new Map();
         }
-        const children: ?Map<E, Node> = this.children;
+        const children: ?Map<E, Node<V, E>> = this.children;
         if (children!=null) {
-            const prevValue: ?Node = children.get(edge);
+            const prevValue: ?Node<V, E> = children.get(edge);
             children.set(edge, node);
             return prevValue;
         } else throw new Error('bug1');
     }
 
     setn(edge: E, node: Node<V,E>): void {
-        const prevValue: ?Node = this.set(edge, node);
+        const prevValue: ?Node<V, E> = this.set(edge, node);
         assert(prevValue===undefined);
     }
 
@@ -93,10 +93,10 @@ class Node<V, E> {
         _visit(this, null, null, true);        
     }
 
-    descendants(_includingThisNode: ?boolean): Array<Node> {
+    descendants(_includingThisNode: ?boolean): Array<Node<V, E>> {
         const includingThisNode: boolean = _includingThisNode == null ? false : _includingThisNode;
-        const descendants: Array<Node> = [];
-        function f(n : Node) {
+        const descendants: Array<Node<V, E>> = [];
+        function f(n : Node<V, E>) {
             descendants.push(n);
         }
 
@@ -110,7 +110,7 @@ class Node<V, E> {
     leafs(_includingThisNode: ?boolean): Array<Node<V,E>> {
         const includingThisNode: boolean = _includingThisNode == null ? false : _includingThisNode;        
         const rv: Array<Node<V,E>> = [];
-        function addLeavesOnly(n: Node): void {
+        function addLeavesOnly(n: Node<V, E>): void {
             if (n.isLeaf())
                 rv.push(n);
         }
@@ -118,14 +118,14 @@ class Node<V, E> {
         return rv;
     }
 
-    edgeThatLeadsTo(n: Node): ?E {
+    edgeThatLeadsTo(n: Node<V, E>): ?E {
         assert(!this.isLeaf());
-        const children: ?Map<E, Node> = this.children;
+        const children: ?Map<E, Node<V, E>> = this.children;
         assert(children !== undefined);
         if (children != null) {
             const rv: Array<E> = [];
-            children.forEach( function (child: Node, edge: E) {
-                const descendants: Array<Node> = child.descendants(true);
+            children.forEach( function (child: Node<V, E>, edge: E) {
+                const descendants: Array<Node<V, E>> = child.descendants(true);
                 if (descendants.includes(n))
                     rv.push(edge);
             });
@@ -136,7 +136,7 @@ class Node<V, E> {
     }
 
     print(printAdornment: boolean, _valuePrinter: ?ValuePrinter<V>, _adornPrinter: ?ValuePrinter<any>): string {
-        let valuePrinter: ValuePrinter<V>   = (_valuePrinter==null?(x)=>`${x}`:_valuePrinter);
+        let valuePrinter: ValuePrinter<V>   = (_valuePrinter==null?(x:V)=>`${String(x)}`:_valuePrinter);
         let adornPrinter: ValuePrinter<any> = (_adornPrinter==null?(x)=>`${x}`:_adornPrinter);        
         const s: symbol = Symbol.for(TREE_NODE_ID_SYMBOL_KEY);// Symbol();
         let i: number = 0;

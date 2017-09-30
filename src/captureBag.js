@@ -5,6 +5,7 @@ import assert from 'assert';
 import _ from 'lodash';
 
 import {PieceOnSide} from './piece.js';
+import {PieceSet} from './piece-set-factory.js';
 
 class CaptureBag {
     capturedPieces: Array<IConcretePieceOnSide>;
@@ -24,8 +25,11 @@ class CaptureBag {
         const rv: Array<IConcretePieceOnSide> = [];
         for (let i = 0 ; i < notation.length ; i++) {
             const code = notation[i];
-            const concretePiece: IConcretePiece = pieceSet.fromCode(code.toLowerCase());
-            rv.push(new PieceOnSide(concretePiece, code===code.toUpperCase()));
+            const concretePiece: ?IConcretePiece = pieceSet.fromCode(code.toLowerCase());
+            if (concretePiece!=null)
+                rv.push(new PieceOnSide(concretePiece, code===code.toUpperCase()));
+            else
+                throw new Error('impossible to not find piece with code [${code.toLowerCase()}]');
         }
         return new CaptureBag(rv);
     }
@@ -45,8 +49,11 @@ class CaptureBag {
         this.capturedPieces.forEach( (x)=> {
             if (!rv.has(x.toString()))
                 rv.set(x.toString(), 0);
-            let count: int = rv.get(x.toString());
-            rv.set(x.toString(), count+1);
+            let count: ?number = rv.get(x.toString());
+            if (count!=null)
+                rv.set(x.toString(), count+1);
+            else
+                throw new Error('impossible, I think - its rather late ..');
         });
         return rv;
     }

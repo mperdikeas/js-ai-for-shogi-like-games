@@ -86,7 +86,7 @@ class DropMove extends DropMoveNoPieceInformation {
         return new DropMove(pieceOnSide, point);
     }
     toString(): string {
-        return `${this.pieceOnSide}=>${this.to}`;
+        return `${this.pieceOnSide.toString()}=>${this.to}`;
     }
     equals(o: any) {
         if (!(o instanceof DropMove)) {

@@ -152,7 +152,7 @@ class GameBoard {
     assertPieceSetSupersetOfBoardPieces(pieceSet: Array<IConcretePiece>) {
         this.board.forEach( (pieceOnSide: IConcretePieceOnSide, position: string) => {
             if (!_.includes(pieceSet, pieceOnSide.piece))
-                throw new Error(`The piece set ${pieceSet} does not include ${pieceOnSide.piece}`);
+                throw new Error(`The piece set ${pieceSet.toString()} does not include ${pieceOnSide.piece.toString()}`);
         });
     }
 
@@ -166,17 +166,17 @@ class GameBoard {
 
     sideOfMove(m: Move): Side {
         if (m instanceof DropMove) {
-            assert(this.captured.has(m.pieceOnSide), `B#ISMS#CNHP: the capture bag of board ${this} does not have the piece involved in the drop ${m}`);
-            assert(this.isCellEmpty(m.to), `B#ISMS#DNEC: impossible drop ${m} to non-empty cell on board ${this}`);
+            assert(this.captured.has(m.pieceOnSide), `B#ISMS#CNHP: the capture bag of board ${this.toString()} does not have the piece involved in the drop ${m.toString()}`);
+            assert(this.isCellEmpty(m.to), `B#ISMS#DNEC: impossible drop ${m.toString()} to non-empty cell on board ${this.toString()}`);
             return m.pieceOnSide.isSideA?Side.A:Side.B;
         }         
         if (m instanceof DropMoveNoPieceInformation) {
-            assert(this.isCellEmpty(m.to), `B#ISMS#DNEC: impossible drop ${m} to non-empty cell on board ${this}`);
+            assert(this.isCellEmpty(m.to), `B#ISMS#DNEC: impossible drop ${m.toString()} to non-empty cell on board ${this.toString()}`);
             return m.side;
         } else if (m instanceof BoardMove) {
             assert(!this.isCellEmpty(m.vector.from));
             const rv: Side = this.sideOnCell(m.vector.from);
-            assert(this.isCellEmpty(m.vector.to) || (this.sideOnCell(m.vector.to)===rv.theOther()), `B#ISMS#IV invalid move ${m.vector} on board ${this}`);
+            assert(this.isCellEmpty(m.vector.to) || (this.sideOnCell(m.vector.to)===rv.theOther()), `B#ISMS#IV invalid move ${m.vector} on board ${this.toString()}`);
             return rv;
         }
         else throw new Error(`Unrecognized move: ${m.toString()}`);
@@ -231,7 +231,7 @@ class GameBoard {
         assert(piece             , `B-RD-NPEOP: no piece exists on point ${p} on board:\n ${this.toStringFancy()}`);
         if (piece != null) { // Flow compels me to make the check this way
             assert(piece !== null); // ... but I am going to assert that a stronger, still, condition holds
-            assert(piece.piece.isKing, `B-RD-NK: the piece that exists on point ${p} on board:\n ${this.toStringFancy()}\n ... is [${piece.piece}] and is not a King`);
+            assert(piece.piece.isKing, `B-RD-NK: the piece that exists on point ${p} on board:\n ${this.toStringFancy()}\n ... is ${piece.piece.toString()} which is not a King`);
             if (!this.winIfKingReachesFarEnd)
                 return Number.POSITIVE_INFINITY;
             if (piece.isSideA) {
@@ -374,7 +374,7 @@ class GameBoard {
     isPromotionTriggered(pn1: Point, pn2: Point): boolean {
         assert (!pn1.equals(pn2));
         if (!this._has(pn1))
-            throw new Error(`board ${this} does not contain piece at starting point: ${pn1}`);
+            throw new Error(`board ${this.toString()} does not contain piece at starting point: ${pn1}`);
         else {
             const piece: ?IConcretePieceOnSide = this._get(pn1);
             assert(piece!==undefined);
@@ -424,7 +424,7 @@ class GameBoard {
 
     isPieceUnderAttack(pn: Point): boolean { // we are assuming that the opposite side moves
         if (!this._has(pn))
-            throw new Error(`board ${this} does not contain piece at starting point: ${pn}`);
+            throw new Error(`board ${this.toString()} does not contain piece at starting point: ${pn}`);
         else {
             const piece: ?IConcretePieceOnSide = this._get(pn);
             assert(piece!==undefined);

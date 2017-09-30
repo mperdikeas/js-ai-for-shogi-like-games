@@ -49,7 +49,7 @@ function bestMove(gb: GameBoard, sideA: boolean, depth: number, evalModel: Evalu
     if (false)
     console.log(`\n\n\n**** When evaluations are pulled up:\n${moveTree.print(true)}`);
     const scoreSelector : (a: number, b: number)=> number = sideA? Math.max: Math.min;
-    const cmp  : (a: number, b: number) => number = sideA? (a,b)=>a>b : (a,b)=>a<b;
+    const cmp  : (a: number, b: number) => boolean = sideA? (a,b)=>a>b : (a,b)=>a<b;
     let currentlyBestScore: number  = sideA? -Infinity: Infinity;
     let currentlyShallowestDepth = Infinity;
     let selectedEdge: ?string = null;
