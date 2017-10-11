@@ -59,7 +59,7 @@ class DropMoveNoPieceInformation extends Move {
         return new DropMoveNoPieceInformation(side, point);
     }
     toString(): string {
-        return `$?{this.side}=>${this.to}`;
+        return `${this.side}=>${this.to}`;
     }
     equals(o: any): boolean {
         if (!(o instanceof DropMoveNoPieceInformation)) {
